@@ -1,0 +1,2 @@
+ALTER TABLE "home_page_content" ADD COLUMN "product_id" integer;--> statement-breakpoint
+ALTER TABLE "home_page_content" ADD CONSTRAINT "home_page_content_product_id_products_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("product_id") ON DELETE set null ON UPDATE no action;

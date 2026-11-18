@@ -1,0 +1,188 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1784809133372,
+      "tag": "0000_keen_nicolaos",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1785370739109,
+      "tag": "0001_aspiring_vapor",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785372499158,
+      "tag": "0002_workable_callisto",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1785374702473,
+      "tag": "0003_broken_skreet",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1785524759765,
+      "tag": "0004_wild_franklin_richards",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1785528658627,
+      "tag": "0005_flimsy_siren",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1785528938346,
+      "tag": "0006_famous_calypso",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1785792501873,
+      "tag": "0007_past_frank_castle",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1787436225281,
+      "tag": "0008_wet_blonde_phantom",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1788005721161,
+      "tag": "0009_wakeful_justin_hammer",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1788105263718,
+      "tag": "0010_absurd_vin_gonzales",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1788105850408,
+      "tag": "0011_optimal_zzzax",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1788106881414,
+      "tag": "0012_busy_mockingbird",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1790812800000,
+      "tag": "0013_rider_onboarding",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1791632445883,
+      "tag": "0014_rider_preferences",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1791632512878,
+      "tag": "0015_support_contact_preference",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1791638947311,
+      "tag": "0016_rider_documents",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1791659450120,
+      "tag": "0017_strong_frog_thor",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1791746400000,
+      "tag": "0018_home_page_content",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1791747086570,
+      "tag": "0019_giant_king_cobra",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1791778529018,
+      "tag": "0020_shop_order_items",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1791858175845,
+      "tag": "0021_kind_vermin",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1791859990799,
+      "tag": "0022_rainy_payback",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1792575897000,
+      "tag": "0023_home_content_price",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1792576047572,
+      "tag": "0024_powerful_guardsmen",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1792578072462,
+      "tag": "0025_flowery_agent_brand",
+      "breakpoints": true
+    }
+  ]
+}

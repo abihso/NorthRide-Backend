@@ -1,0 +1,222 @@
+import { desc, eq } from "drizzle-orm";
+import { Router } from "express";
+import db from "../db/index.js";
+import * as schema from "../db/schema.js";
+
+const ticketrouter = Router();
+
+ticketrouter.get("/admin/support-tickets", async (req, res) => {
+  if (req.user?.userType !== "admin") {
+    return res.status(403).json({
+      success: false,
+      message: "Administrator access required.",
+    });
+  }
+  try {
+    const limit = Math.max(1, Math.min(200, Number(req.query.limit) || 100));
+    const tickets = await db
+      .select()
+      .from(schema.supportTickets)
+      .orderBy(desc(schema.supportTickets.createdAt))
+      .limit(limit);
+    return res.json({ success: true, data: tickets });
+  } catch (error) {
+    console.error("Could not load admin support queue:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Could not load support tickets.",
+    });
+  }
+});
+
+// =============================================
+// SUPPORT TICKET ROUTES
+// =============================================
+
+// Create support ticket
+ticketrouter.post("/support-tickets", async (req, res) => {
+  try {
+    const { subject, message, category } = req.body;
+    const allowedCategories = new Set([
+      "order",
+      "payment",
+      "delivery",
+      "ride",
+      "account",
+      "other",
+    ]);
+    if (
+      typeof subject !== "string" ||
+      !subject.trim() ||
+      typeof message !== "string" ||
+      !message.trim() ||
+      !allowedCategories.has(category || "other")
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "A subject, message, and valid category are required.",
+      });
+    }
+
+    const [riderPreferences] = await db
+      .select({
+        preferredContactMethod:
+          schema.riderPreferences.preferredContactMethod,
+      })
+      .from(schema.riderPreferences)
+      .where(eq(schema.riderPreferences.userId, req.user.userId))
+      .limit(1);
+
+    const [ticket] = await db
+      .insert(schema.supportTickets)
+      .values({
+        userId: req.user.userId,
+        subject: subject.trim(),
+        message: message.trim(),
+        category: category || "other",
+        contactMethod: riderPreferences?.preferredContactMethod ?? null,
+        priority: "medium",
+      })
+      .returning();
+
+    res.status(201).json({ success: true, data: ticket });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Get user support tickets
+ticketrouter.get("/users/:userId/tickets", async (req, res) => {
+  if (
+    Number(req.params.userId) !== req.user.userId &&
+    req.user.userType !== "admin"
+  ) {
+    return res
+      .status(403)
+      .json({ success: false, message: "You cannot view these tickets." });
+  }
+  try {
+    const { status, limit = 50 } = req.query;
+    let query = db
+      .select()
+      .from(schema.supportTickets)
+      .where(eq(schema.supportTickets.userId, parseInt(req.params.userId)))
+      .orderBy(desc(schema.supportTickets.createdAt));
+
+    if (status) {
+      query = query.where(eq(schema.supportTickets.status, status));
+    }
+
+    const tickets = await query.limit(parseInt(limit));
+    res.json({ success: true, data: tickets });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Update support ticket
+ticketrouter.patch("/support-tickets/:id", async (req, res) => {
+  if (req.user?.userType !== "admin") {
+    return res.status(403).json({
+      success: false,
+      message: "Administrator access required.",
+    });
+  }
+  const ticketId = Number(req.params.id);
+  if (!Number.isInteger(ticketId) || ticketId <= 0) {
+    return res.status(400).json({
+      success: false,
+      message: "A valid support ticket ID is required.",
+    });
+  }
+  try {
+    const { status, assignedTo, priority } = req.body;
+    const updates = { updatedAt: new Date() };
+
+    if (status !== undefined) {
+      if (!["open", "in_progress", "resolved", "closed"].includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: "A valid support ticket status is required.",
+        });
+      }
+      updates.status = status;
+    }
+    if (priority !== undefined) {
+      if (!["low", "medium", "high", "urgent"].includes(priority)) {
+        return res.status(400).json({
+          success: false,
+          message: "A valid support ticket priority is required.",
+        });
+      }
+      updates.priority = priority;
+    }
+    if (assignedTo !== undefined) {
+      if (assignedTo !== null && (!Number.isInteger(assignedTo) || assignedTo <= 0)) {
+        return res.status(400).json({
+          success: false,
+          message: "A valid assignee ID is required.",
+        });
+      }
+      updates.assignedTo = assignedTo;
+    }
+    if (Object.keys(updates).length === 1) {
+      return res.status(400).json({
+        success: false,
+        message: "At least one ticket field must be updated.",
+      });
+    }
+
+    const [ticket] = await db
+      .update(schema.supportTickets)
+      .set(updates)
+      .where(eq(schema.supportTickets.ticketId, ticketId))
+      .returning();
+
+    if (!ticket) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Ticket not found" });
+    }
+    res.json({ success: true, data: ticket });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+ticketrouter.delete("/support-tickets/:id", async (req, res) => {
+  if (req.user?.userType !== "admin") {
+    return res.status(403).json({
+      success: false,
+      message: "Administrator access required.",
+    });
+  }
+  const ticketId = Number(req.params.id);
+  if (!Number.isInteger(ticketId) || ticketId <= 0) {
+    return res.status(400).json({
+      success: false,
+      message: "A valid support ticket ID is required.",
+    });
+  }
+  try {
+    const [ticket] = await db
+      .delete(schema.supportTickets)
+      .where(eq(schema.supportTickets.ticketId, ticketId))
+      .returning({ ticketId: schema.supportTickets.ticketId });
+    if (!ticket) {
+      return res.status(404).json({
+        success: false,
+        message: "Support ticket not found.",
+      });
+    }
+    return res.json({ success: true, message: "Support ticket deleted." });
+  } catch (error) {
+    console.error("Could not delete support ticket:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Could not delete the support ticket.",
+    });
+  }
+});
+
+export default ticketrouter;

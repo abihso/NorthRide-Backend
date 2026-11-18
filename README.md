@@ -3,6 +3,11 @@
 Express API for the NorthRide Expo app. Copy `.env.example` to `.env`, fill in
 the database and provider credentials, then run `npm start` from this directory.
 
+`npm start` runs Node directly for production, including Render deployments.
+Use `npm run dev` locally for automatic restarts with nodemon. On Render, keep
+the start command set to `npm start`; production startup does not require
+development dependencies.
+
 Set `SESSION_SECRET` to a unique random value and configure `CLIENT_ORIGINS`
 with the exact browser origins used by the deployed client. Production startup
 fails closed if `SESSION_SECRET` is missing.
